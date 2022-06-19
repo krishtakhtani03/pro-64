@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
+import dictionary from '../database';
 export default class HomeScreen extends Component{
   constructor() {
     super();
@@ -14,53 +15,28 @@ export default class HomeScreen extends Component{
     };
   }
 
-  getWord=(word)=>{
-    var searchKeyword=word.toLowerCase()
-    var url;
-    //url = "https://rupinwhitehatjr.github.io/dictionary/searchKeyword.json"
-    //url = "https://rupinwhitehatjr.github.io/dictionary/"+ +".json"
-    //url = "https://rupinwhitehatjr.github.io/dictionary/"+searchKeyword+".json"
-    //url = "https://rupinwhitehatjr.github.io/dictionary/"+word+".json"
+  getWord=(text)=>{
+    var text = text.toLowerCase()
+    try{
+      var word = dictionary[text]["word"]
 
-    return fetch(url)
-    .then((data)=>{
-      if(data.status===200)
-      {
-        return data.json()
-      }
-      else
-      {
-        return null
-      }
-    })
-    .then((response)=>{
+      var lexicalCategory = dictionary["lexicalCategory"]
 
-        var responseObject = response
-        if(responseObject)
-        {
-          var wordData = responseObject.definitions[0]
-
-          var definition=wordData.description
-          var lexicalCategory=wordData.wordtype
-
-          this.setState({
-            "word" : this.state.text, 
-            "definition" :definition,
-            "lexicalCategory": lexicalCategory     
-            
-          })
-        }
-        else
-        {
-          this.setState({
-            "word" : this.state.text, 
-            "definition" :"Not Found",
-            
-          })
-
-        }
-    
-    })
+      var definition = dictionary["definition"]
+      
+      this.setState({
+        "word" : word,
+        "lexicalCategory" : lexicalCategory,
+        "definition" : definition
+      })
+    }
+    catch(err){
+      alert("Sorry This word is not available for now")
+      this.setState({
+        'text':'',
+        'isSearchPressed':false
+      })
+    }
   }
 
   render(){
@@ -74,48 +50,6 @@ export default class HomeScreen extends Component{
           }}
         />
         <View style={styles.inputBoxContainer}>
-      
-        <Text 
-           onChangeText={text => {
-              this.setState({
-                text: text,
-                isSearchPressed: false,
-                word  : "Loading...",
-                lexicalCategory :'',
-                examples : [],
-                definition : ""
-              });
-           }}
-        />
-  
-     {/*   <input 
-           onChangeText={text => {
-              this.setState({
-                text: text,
-                isSearchPressed: false,
-                word  : "Loading...",
-                lexicalCategory :'',
-                examples : [],
-                definition : ""
-              });
-           }}
-        /> 
-        */}
-      {/*
-      <TouchableOpacity 
-           onChangeText={text => {
-              this.setState({
-                text: text,
-                isSearchPressed: false,
-                word  : "Loading...",
-                lexicalCategory :'',
-                examples : [],
-                definition : ""
-              });
-           }}
-        /> 
-      */}
-      {/*
           <TextInput
             style={styles.inputBox}
             onChangeText={text => {
@@ -125,12 +59,12 @@ export default class HomeScreen extends Component{
                 word  : "Loading...",
                 lexicalCategory :'',
                 examples : [],
-                definition : ""
+                defination : ""
               });
             }}
             value={this.state.text}
           />
-  ``````*/}
+
           <TouchableOpacity
             style={styles.searchButton}
             onPress={() => {
@@ -153,27 +87,24 @@ export default class HomeScreen extends Component{
               (
                 <View style={{justifyContent:'center', marginLeft:10 }}>
                   <View style={styles.detailsContainer}>
-                    <Text style={styles.detailsTitle}>
-                      Word :{" "}
-                    </Text>
+                    <Text style={styles.detailsTitle}> Word :{" "} </Text>
                     <Text style={{fontSize:18 }}>
+                      {/*Display the word here*/}
                       {this.state.word}
                     </Text>
                   </View>
                   <View style={styles.detailsContainer}>
-                    <Text style={styles.detailsTitle}>
-                      Type :{" "}
-                    </Text>
+                    <Text style={styles.detailsTitle}> Type :{" "}  </Text>
                     <Text style={{fontSize:18}}>
-                      {this.state.lexicalCategory}
+                      {/*Display the category here*/}
+                      {this.state.word}
                     </Text>
                   </View>
                   <View style={{flexDirection:'row',flexWrap: 'wrap'}}>
-                    <Text style={styles.detailsTitle}>
-                      Definition :{" "}
-                    </Text>
+                    <Text style={styles.detailsTitle}> Definition :{" "} </Text>
                     <Text style={{ fontSize:18}}>
-                      {this.state.definition}
+                    {/*Display the definition here*/}
+                      {this.state.word}
                     </Text>
                   </View>
                 </View>
